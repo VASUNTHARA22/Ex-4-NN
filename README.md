@@ -117,66 +117,101 @@ Normalize our dataset.
 <H3>Program:</H3> 
 
 ```
+# Import packages and classes
 import pandas as pd
-import sklearn
 from sklearn import preprocessing
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import classification_report, confusion_matrix
-import seaborn as sns
 
-# Load the Penguins dataset
-penguins = sns.load_dataset("penguins").dropna()
+# Load Iris dataset
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'Class']
+irisdata = pd.read_csv(url, names=names)
 
-# Prepare features (X) and labels (y)
-X = penguins[['bill_length_mm', 'bill_depth_mm', 'flipper_length_mm', 'body_mass_g']]
-y = penguins['species']   # <-- keep as Series first
+# Features (first 4 columns)
+X = irisdata.iloc[:, 0:4]
 
-# Display sample data
-print("Features (first 5 rows):")
-print(X.head())
-print("\nLabels (first 5 rows):")
-print(y.head())
+# Target (5th column)
+y = irisdata['Class']
 
-# Show unique classes
-print("\nUnique classes in the dataset:")
-print(y.unique())
-
-# Convert categorical labels to numerical values
+# Encode categorical labels into numeric
 le = preprocessing.LabelEncoder()
-y = le.fit_transform(y)   # <-- now y is a NumPy array of length 333
-print("\nEncoded labels (first 5 rows):")
-print(y[:5])
+y = le.fit_transform(y)
 
-# Split data into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.20)
+# Split data into training (80%) and testing (20%)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Standardize features
+# Feature scaling
 scaler = StandardScaler()
-scaler.fit(X_train)
-X_train = scaler.transform(X_train)
+X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
-# Create and train Multi-layer Perceptron classifier
-mlp = MLPClassifier(hidden_layer_sizes=(10, 10, 10), max_iter=1000)
+# Define MLP model with 3 hidden layers of 10 neurons each
+mlp = MLPClassifier(hidden_layer_sizes=(10, 10, 10), max_iter=1000, random_state=42)
+
+# Train the model
 mlp.fit(X_train, y_train)
 
 # Make predictions
 predictions = mlp.predict(X_test)
-print("\nModel predictions:")
-print(predictions)
+print("Predictions:\n", predictions)
 
-# Evaluate model performance
-print("\nConfusion Matrix:")
-print(confusion_matrix(y_test, predictions))
-print("\nClassification Report:")
-print(classification_report(y_test, predictions))
+# Evaluate performance
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, predictions))
+print("\nClassification Report:\n", classification_report(y_test, predictions))
+
+```
+```
+# Import libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Load dataset
+url = 'https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data'
+columns = ['SepalLength', 'SepalWidth', 'PetalLength', 'PetalWidth', 'Species']
+df = pd.read_csv(url, names=columns)
+
+# Display first 5 rows
+print(df.head())
+
+# Features and target
+X = df.iloc[:, 0:4]  # Features
+y = df['Species']    # Target
+
+# Split dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=42, stratify=y
+)
+
+# Standardize features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Create and train MLP classifier
+mlp = MLPClassifier(hidden_layer_sizes=(12, 13, 14), activation='relu',
+                    solver='adam', max_iter=2500, random_state=42)
+mlp.fit(X_train, y_train)
+
+# Predict on test data
+y_pred = mlp.predict(X_test)
+
+# Evaluate results
+print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
 ```
 
 <H3>Output:</H3>
 
-<img width="809" height="722" alt="image" src="https://github.com/user-attachments/assets/a55ab041-2a0a-406a-a9d1-ff4c02db417c" />
+<img width="748" height="429" alt="image" src="https://github.com/user-attachments/assets/4b5a2342-898f-45e7-8ca8-d42398a5cf29" />
+
+<img width="697" height="488" alt="image" src="https://github.com/user-attachments/assets/cbfbad9d-758d-4a91-8b43-532a5533c50c" />
 
 
 <H3>Result:</H3>
