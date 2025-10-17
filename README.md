@@ -209,7 +209,9 @@ print("\nClassification Report:\n", classification_report(y_test, y_pred))
 
 <H3>Output:</H3>
 
+
 <img width="748" height="429" alt="image" src="https://github.com/user-attachments/assets/4b5a2342-898f-45e7-8ca8-d42398a5cf29" />
+
 
 <img width="697" height="488" alt="image" src="https://github.com/user-attachments/assets/cbfbad9d-758d-4a91-8b43-532a5533c50c" />
 
